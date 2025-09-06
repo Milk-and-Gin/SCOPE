@@ -4,13 +4,30 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Modern Magik Ritual Tracker</title>
-  <!-- PWA links -->
+  <!-- Manifest and icons -->
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/png" sizes="192x192" href="app-icon-192.png">
   <link rel="apple-touch-icon" href="app-icon-192.png">
   <meta name="theme-color" content="#58318b">
   <style>
-    /* Keep your existing CSS here (neutral colours, cards, sliders etc.) */
+    /* Your existing CSS: header, cards, sliders, bars, buttons, floating link, etc. */
+    :root {
+      --bg-color: #f3f3f3;
+      --surface-color: #ffffff;
+      --border-color: #d0d0d0;
+      --text-color: #1f1f1f;
+      --muted-color: #666666;
+      --accent-color: #58318b;
+    }
+    body {
+      margin: 0;
+      padding-bottom: 6rem;
+      background: var(--bg-color);
+      color: var(--text-color);
+      font-family: "Roboto Mono", monospace;
+      line-height: 1.5;
+    }
+    /* ...rest of CSS omitted for brevity; use the same card, slider, output bar styles as before... */
   </style>
 </head>
 <body>
@@ -20,21 +37,33 @@
   </header>
   <main>
     <form id="scope-form">
-      <!-- Meta section omitted for brevity -->
+      <!-- Meta -->
       <div class="card">
-        <h3>Inputs (0–1 scale)</h3>
-        <!-- existing sliders -->
-        <!-- ... -->
-        <label>
-          <span>κ (kappa)</span>
-          <!-- Slider to calibrate Psi, 0–10 range -->
-          <input type="range" id="kappa" min="0" max="10" step="0.25" value="1">
-          <span class="range-value" id="kappaVal">1.00</span>
-        </label>
+        <h3>Meta</h3>
+        <label><span>Date</span><input type="date" id="date"></label>
+        <label><span>Location</span><input type="text" id="location"></label>
+        <label><span>Tradition</span><input type="text" id="tradition"></label>
+        <label><span>Goal</span><input type="text" id="goal"></label>
       </div>
+      <!-- Inputs -->
+      <div class="card">
+        <h3>Inputs (0–1 scale)</h3>
+        <label><span>Attention A</span><input type="range" id="aFocus" min="0" max="1" step="0.25" value="0"><span class="range-value" id="aFocusVal">0.00</span></label>
+        <label><span>Belief B</span><input type="range" id="bBelief" min="0" max="1" step="0.25" value="0"><span class="range-value" id="bBeliefVal">0.00</span></label>
+        <label><span>Attachment D</span><input type="range" id="dAttach" min="0" max="1" step="0.25" value="0"><span class="range-value" id="dAttachVal">0.00</span></label>
+        <label><span>Resistance R</span><input type="range" id="rRes" min="0" max="1" step="0.25" value="0"><span class="range-value" id="rResVal">0.00</span></label>
+        <label><span>Skill S</span><input type="range" id="sSkill" min="0" max="1" step="0.25" value="0"><span class="range-value" id="sSkillVal">0.00</span></label>
+        <label><span>Link L</span><input type="range" id="lLink" min="0" max="1" step="0.25" value="0"><span class="range-value" id="lLinkVal">0.00</span></label>
+        <label><span>Representation Rr</span><input type="range" id="rRepr" min="0" max="1" step="0.25" value="0"><span class="range-value" id="rReprVal">0.00</span></label>
+        <label><span>Coordination C</span><input type="range" id="cCoord" min="0" max="1" step="0.25" value="0"><span class="range-value" id="cCoordVal">0.00</span></label>
+        <label><span>Vitality V</span><input type="range" id="vVitality" min="0" max="1" step="0.25" value="0"><span class="range-value" id="vVitalityVal">0.00</span></label>
+        <label><span>Noise Q</span><input type="range" id="qNoise" min="0" max="1" step="0.25" value="1"><span class="range-value" id="qNoiseVal">1.00</span></label>
+        <!-- New Kappa slider -->
+        <label><span>κ (kappa)</span><input type="range" id="kappa" min="0" max="10" step="0.25" value="1"><span class="range-value" id="kappaVal">1.00</span></label>
+      </div>
+      <!-- Outputs -->
       <div class="card">
         <h3>Outputs</h3>
-        <!-- existing outputs for Ψ and P* -->
         <div class="output-row">
           <div class="output-label">Ψ (efficacy)</div>
           <div class="output-bar"><div class="output-fill" id="psiBar"></div></div>
@@ -55,7 +84,7 @@
   </main>
   <a class="floating-link" href="https://www.milkandgin.co.uk/scope" target="_blank">Read More About SCOPE</a>
   <script>
-    // References for new slider and value
+    // Map input elements
     const inputs = {
       aFocus: document.getElementById('aFocus'),
       bBelief: document.getElementById('bBelief'),
@@ -70,46 +99,68 @@
       kappa: document.getElementById('kappa')
     };
     const spans = {
-      // existing value spans...
+      aFocusVal: document.getElementById('aFocusVal'),
+      bBeliefVal: document.getElementById('bBeliefVal'),
+      dAttachVal: document.getElementById('dAttachVal'),
+      rResVal: document.getElementById('rResVal'),
+      sSkillVal: document.getElementById('sSkillVal'),
+      lLinkVal: document.getElementById('lLinkVal'),
+      rReprVal: document.getElementById('rReprVal'),
+      cCoordVal: document.getElementById('cCoordVal'),
+      vVitalityVal: document.getElementById('vVitalityVal'),
+      qNoiseVal: document.getElementById('qNoiseVal'),
       kappaVal: document.getElementById('kappaVal')
     };
-    // compute function now multiplies by kappa
+    const psiBar   = document.getElementById('psiBar');
+    const pStarBar = document.getElementById('pStarBar');
+    const psiVal   = document.getElementById('psiVal');
+    const pStarVal = document.getElementById('pStarVal');
+    const status   = document.getElementById('status');
+
+    // Compute function including kappa
     function compute() {
-      const A = parseFloat(inputs.aFocus.value) || 0;
-      const B = parseFloat(inputs.bBelief.value) || 0;
-      const D = parseFloat(inputs.dAttach.value) || 0;
-      const R = parseFloat(inputs.rRes.value) || 0;
-      const S = parseFloat(inputs.sSkill.value) || 0;
-      const L = parseFloat(inputs.lLink.value) || 0;
-      const Rp= parseFloat(inputs.rRepr.value) || 0;
-      const C = parseFloat(inputs.cCoord.value) || 0;
-      const V = parseFloat(inputs.vVitality.value) || 0;
-      const Q = parseFloat(inputs.qNoise.value) || 0;
-      const K = parseFloat(inputs.kappa.value) || 1;
-      // base model
+      const A = parseFloat(inputs.aFocus.value)   || 0;
+      const B = parseFloat(inputs.bBelief.value)  || 0;
+      const D = parseFloat(inputs.dAttach.value)  || 0;
+      const R = parseFloat(inputs.rRes.value)     || 0;
+      const S = parseFloat(inputs.sSkill.value)   || 0;
+      const L = parseFloat(inputs.lLink.value)    || 0;
+      const Rp= parseFloat(inputs.rRepr.value)    || 0;
+      const C = parseFloat(inputs.cCoord.value)   || 0;
+      const V = parseFloat(inputs.vVitality.value)|| 0;
+      const Q = parseFloat(inputs.qNoise.value)   || 0;
+      const K = parseFloat(inputs.kappa.value)    || 1;
       const H  = A * B * (1 - D) * (1 - R);
       const X  = S * L * Rp * C;
       const PsiRaw  = K * H * X * V * Q;
-      const baseline = 0.5;
+      const baseline= 0.5;
       const PStarRaw= baseline + (1 - baseline) * PsiRaw;
-      // clamp
-      const Psi    = Math.max(0, Math.min(1, PsiRaw));
-      const PStar  = Math.max(0, Math.min(1, PStarRaw));
-      // scaling for visibility (Psi*10; (PStar-0.5)*5)
-      const psiDisplay  = Math.min(Psi * 10, 1);
-      const pStarDisplay= Math.min(baseline + (PStar - baseline) * 5, 1);
-      document.getElementById('psiBar').style.width   = (psiDisplay * 100) + '%';
-      document.getElementById('pStarBar').style.width = (pStarDisplay * 100) + '%';
-      document.getElementById('psiVal').textContent   = Psi.toFixed(3);
-      document.getElementById('pStarVal').textContent = PStar.toFixed(3);
+      const Psi  = Math.max(0, Math.min(1, PsiRaw));
+      const PStar= Math.max(0, Math.min(1, PStarRaw));
+      // Visual scaling
+      const psiDisplay   = Math.min(Psi * 10, 1);
+      const pStarDisplay = Math.min(baseline + (PStar - baseline) * 5, 1);
+      psiBar.style.width   = (psiDisplay  * 100) + '%';
+      pStarBar.style.width = (pStarDisplay * 100) + '%';
+      psiVal.textContent   = Psi.toFixed(3);
+      pStarVal.textContent = PStar.toFixed(3);
       return {Psi, PStar};
     }
-    // update display values
+
     function updateDisplay() {
-      // existing updates ...
-      spans.kappaVal.textContent = parseFloat(inputs.kappa.value).toFixed(2);
+      spans.aFocusVal.textContent   = parseFloat(inputs.aFocus.value).toFixed(2);
+      spans.bBeliefVal.textContent  = parseFloat(inputs.bBelief.value).toFixed(2);
+      spans.dAttachVal.textContent  = parseFloat(inputs.dAttach.value).toFixed(2);
+      spans.rResVal.textContent     = parseFloat(inputs.rRes.value).toFixed(2);
+      spans.sSkillVal.textContent   = parseFloat(inputs.sSkill.value).toFixed(2);
+      spans.lLinkVal.textContent    = parseFloat(inputs.lLink.value).toFixed(2);
+      spans.rReprVal.textContent    = parseFloat(inputs.rRepr.value).toFixed(2);
+      spans.cCoordVal.textContent   = parseFloat(inputs.cCoord.value).toFixed(2);
+      spans.vVitalityVal.textContent= parseFloat(inputs.vVitality.value).toFixed(2);
+      spans.qNoiseVal.textContent   = parseFloat(inputs.qNoise.value).toFixed(2);
+      spans.kappaVal.textContent    = parseFloat(inputs.kappa.value).toFixed(2);
     }
-    // save to local storage
+
     function updateLatestEntry() {
       const {Psi, PStar} = compute();
       const entry = {
@@ -117,47 +168,75 @@
         location: document.getElementById('location').value,
         tradition: document.getElementById('tradition').value,
         goal: document.getElementById('goal').value,
-        A: parseFloat(inputs.aFocus.value) || 0,
-        B: parseFloat(inputs.bBelief.value) || 0,
-        D: parseFloat(inputs.dAttach.value) || 0,
-        R: parseFloat(inputs.rRes.value) || 0,
-        S: parseFloat(inputs.sSkill.value) || 0,
-        L: parseFloat(inputs.lLink.value) || 0,
-        Rp:parseFloat(inputs.rRepr.value) || 0,
-        C: parseFloat(inputs.cCoord.value) || 0,
-        V: parseFloat(inputs.vVitality.value) || 0,
-        Q: parseFloat(inputs.qNoise.value) || 0,
-        kappa: parseFloat(inputs.kappa.value) || 1,
+        A: parseFloat(inputs.aFocus.value)   || 0,
+        B: parseFloat(inputs.bBelief.value)  || 0,
+        D: parseFloat(inputs.dAttach.value)  || 0,
+        R: parseFloat(inputs.rRes.value)     || 0,
+        S: parseFloat(inputs.sSkill.value)   || 0,
+        L: parseFloat(inputs.lLink.value)    || 0,
+        Rp:parseFloat(inputs.rRepr.value)    || 0,
+        C: parseFloat(inputs.cCoord.value)   || 0,
+        V: parseFloat(inputs.vVitality.value)|| 0,
+        Q: parseFloat(inputs.qNoise.value)   || 0,
+        kappa: parseFloat(inputs.kappa.value)|| 1,
         Psi,
         PStar,
         ts: new Date().toISOString()
       };
       localStorage.setItem('modernMagikLatest', JSON.stringify(entry));
     }
-    // load saved entry on refresh
+
     function loadLatestEntry() {
       const data = localStorage.getItem('modernMagikLatest');
       if (data) {
         const entry = JSON.parse(data);
-        document.getElementById('date').value = entry.date || '';
+        document.getElementById('date').value     = entry.date || '';
         document.getElementById('location').value = entry.location || '';
-        document.getElementById('tradition').value = entry.tradition || '';
-        document.getElementById('goal').value = entry.goal || '';
-        // set slider values
-        inputs.aFocus.value   = entry.A;
-        inputs.bBelief.value  = entry.B;
-        inputs.dAttach.value  = entry.D;
-        inputs.rRes.value     = entry.R;
-        inputs.sSkill.value   = entry.S;
-        inputs.lLink.value    = entry.L;
-        inputs.rRepr.value    = entry.Rp;
-        inputs.cCoord.value   = entry.C;
-        inputs.vVitality.value= entry.V;
-        inputs.qNoise.value   = entry.Q;
+        document.getElementById('tradition').value= entry.tradition || '';
+        document.getElementById('goal').value     = entry.goal || '';
+        inputs.aFocus.value   = entry.A   || 0;
+        inputs.bBelief.value  = entry.B   || 0;
+        inputs.dAttach.value  = entry.D   || 0;
+        inputs.rRes.value     = entry.R   || 0;
+        inputs.sSkill.value   = entry.S   || 0;
+        inputs.lLink.value    = entry.L   || 0;
+        inputs.rRepr.value    = entry.Rp  || 0;
+        inputs.cCoord.value   = entry.C   || 0;
+        inputs.vVitality.value= entry.V   || 0;
+        inputs.qNoise.value   = entry.Q   || 0;
         inputs.kappa.value    = entry.kappa || 1;
       }
     }
-    // attach events
+
+    function saveEntry() {
+      updateLatestEntry();
+      const entry = JSON.parse(localStorage.getItem('modernMagikLatest'));
+      const existing = JSON.parse(localStorage.getItem('modernMagikEntries') || '[]');
+      existing.push(entry);
+      localStorage.setItem('modernMagikEntries', JSON.stringify(existing));
+      status.textContent = 'Entry saved.';
+      setTimeout(() => { status.textContent = ''; }, 2000);
+    }
+
+    function downloadLatest() {
+      let latest = localStorage.getItem('modernMagikLatest');
+      if (!latest) {
+        updateLatestEntry();
+        latest = localStorage.getItem('modernMagikLatest');
+      }
+      const blob = new Blob([latest], { type: 'application/json' });
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement('a');
+      a.href     = url;
+      a.download = 'modern-magik-latest.json';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      status.textContent = 'File downloaded.';
+      setTimeout(() => { status.textContent = ''; }, 2000);
+    }
+
     Object.values(inputs).forEach(el => {
       el.addEventListener('input', () => {
         updateDisplay();
@@ -165,14 +244,14 @@
         compute();
       });
     });
+
     document.getElementById('scope-form').addEventListener('submit', e => {
       e.preventDefault();
-      // existing save logic...
+      saveEntry();
     });
-    document.getElementById('download').addEventListener('click', () => {
-      // existing download logic...
-    });
-    // initial load
+
+    document.getElementById('download').addEventListener('click', downloadLatest);
+
     loadLatestEntry();
     updateDisplay();
     compute();
@@ -180,4 +259,5 @@
   </script>
 </body>
 </html>
-  
+
+
