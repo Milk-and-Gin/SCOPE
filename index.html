@@ -1,174 +1,110 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Modern Magik Ritual Tracker</title>
-  <!-- Link the manifest and icons -->
-  <link rel="manifest" href="manifest.json" />
-  <link rel="icon" type="image/png" sizes="192x192" href="app-icon-192.png" />
-  <link rel="apple-touch-icon" href="app-icon-192.png" />
-  <meta name="theme-color" content="#58318b" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modern Magik Ritual Tracker</title>
+  <!-- PWA: link manifest and icons -->
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" sizes="192x192" href="app-icon-192.png">
+  <link rel="apple-touch-icon" href="app-icon-192.png">
+  <!-- Theme & Apple PWA -->
+  <meta name="theme-color" content="#58318b">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Modern Magik">
   <style>
-    /* Base colour palette */
     :root {
-      --bg-color:     #f3f3f3;
-      --surface-color:#ffffff;
-      --border-color: #d0d0d0;
-      --text-color:   #1f1f1f;
-      --muted-color:  #666666;
-      --accent-color: #58318b;
+      --bg: #f3f3f3;
+      --surface: #fff;
+      --border: #d0d0d0;
+      --text: #1f1f1f;
+      --muted: #666;
+      --accent: #58318b;
     }
-    /* Page and typography */
     body {
-      margin: 0;
-      padding: 0 0 6rem;
-      background: var(--bg-color);
-      color: var(--text-color);
-      font-family: "Roboto Mono", monospace;
-      line-height: 1.5;
+      margin: 0; padding-bottom: 6rem;
+      background: var(--bg); color: var(--text);
+      font-family: "Roboto Mono", monospace; line-height: 1.5;
     }
     header {
-      background: var(--surface-color);
-      border-bottom: 4px solid var(--border-color);
-      padding: 2rem 1rem 1rem;
-      text-align: center;
+      background: var(--surface);
+      border-bottom: 4px solid var(--border);
+      padding: 2rem 1rem 1rem; text-align: center;
     }
     header h1 {
-      margin: 0;
-      font-size: 2rem;
-      font-weight: 700;
-      text-transform: uppercase;
+      margin: 0; font-size: 2rem; font-weight: 700; text-transform: uppercase;
     }
     header h2 {
-      margin: 0.3rem 0 0;
-      font-size: 1.1rem;
-      font-weight: 500;
-      color: var(--muted-color);
-      text-transform: uppercase;
+      margin-top: .3rem; font-size: 1.1rem; font-weight: 500;
+      text-transform: uppercase; color: var(--muted);
     }
-    main {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 1rem;
-    }
-    /* Card container */
+    main { max-width: 900px; margin: 0 auto; padding: 1rem; }
     .card {
-      background: var(--surface-color);
-      border: 2px solid var(--border-color);
-      padding: 1.5rem;
-      margin-bottom: 1.5rem;
+      background: var(--surface); border: 2px solid var(--border);
+      padding: 1.5rem; margin-bottom: 1.5rem;
     }
     .card h3 {
-      margin-top: 0;
-      margin-bottom: 1rem;
-      font-size: 1.2rem;
-      font-weight: 700;
-      text-transform: uppercase;
+      margin-top: 0; margin-bottom: 1rem;
+      font-size: 1.2rem; font-weight: 700; text-transform: uppercase;
     }
-    /* Input labels and controls */
     label {
-      display: flex;
-      flex-direction: column;
-      margin-bottom: 1rem;
-      font-weight: 600;
-      font-size: 0.9rem;
+      display: flex; flex-direction: column; margin-bottom: 1rem;
+      font-weight: 600; font-size: 0.9rem;
     }
-    label span {
-      margin-bottom: 0.25rem;
-    }
-    input[type="text"],
-    input[type="date"] {
-      padding: 0.5rem;
-      border: 2px solid var(--border-color);
-      background: var(--surface-color);
-      font-family: inherit;
-      font-size: 0.9rem;
-      color: var(--text-color);
+    label span { margin-bottom: .25rem; }
+    input[type="text"], input[type="date"] {
+      padding: .5rem; border: 2px solid var(--border);
+      background: var(--surface); font-family: inherit; color: var(--text);
     }
     input[type="range"] {
-      -webkit-appearance: none;
-      width: 100%;
-      height: 1rem;
-      background: var(--border-color);
-      margin-top: 0.25rem;
-      border-radius: 0;
+      -webkit-appearance: none; width: 100%; height: 1rem;
+      background: var(--border); margin-top: .25rem;
     }
     input[type="range"]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      height: 1.2rem;
-      width: 1.2rem;
-      background: var(--accent-color);
-      border: none;
-      margin-top: -0.1rem;
+      -webkit-appearance: none; height: 1.2rem; width: 1.2rem;
+      background: var(--accent); border: none; margin-top: -.1rem;
     }
     input[type="range"]::-webkit-slider-runnable-track {
-      height: 1rem;
-      background: var(--border-color);
+      height: 1rem; background: var(--border);
     }
     .range-value {
-      font-size: 0.75rem;
-      margin-top: 0.25rem;
-      color: var(--muted-color);
+      font-size: .75rem; margin-top: .25rem; color: var(--muted);
     }
-    /* Outputs */
-    .output-row {
-      margin-bottom: 1rem;
+    .note-input {
+      margin-top: .4rem; padding: .4rem;
+      border: 1px solid var(--border);
+      border-radius: 4px; font-size: .8rem;
     }
+    .output-row { margin-bottom: 1rem; }
     .output-bar {
-      position: relative;
-      width: 100%;
-      height: 2rem;
-      background: var(--border-color);
+      position: relative; width: 100%; height: 2rem;
+      background: var(--border);
     }
     .output-fill {
-      position: absolute;
-      top: 0;
-      left: 0;
-      height: 100%;
-      width: 0%;
-      background: var(--accent-color);
-      transition: width 0.3s ease;
+      position: absolute; top: 0; left: 0; height: 100%;
+      width: 0%; background: var(--accent); transition: width .3s ease;
     }
     .output-value {
-      font-size: 0.8rem;
-      margin-top: 0.25rem;
-      color: var(--muted-color);
-      text-align: right;
+      font-size: .8rem; margin-top: .25rem;
+      color: var(--muted); text-align: right;
     }
-    /* Buttons */
     .btn-row {
-      display: flex;
-      gap: 1rem;
-      margin-top: 1rem;
+      display: flex; gap: 1rem; margin-top: 1rem;
     }
     button {
-      flex: 1;
-      padding: 0.8rem;
-      font-size: 0.9rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      border: none;
-      cursor: pointer;
-      color: #fff;
+      flex: 1; padding: .8rem; font-size: .9rem;
+      font-weight: 700; text-transform: uppercase;
+      border: none; cursor: pointer; color: #fff;
     }
-    #save    { background: var(--accent-color); }
-    #download{ background: var(--text-color); }
-    /* Floating link */
+    #save { background: var(--accent); }
+    #download { background: var(--text); }
     .floating-link {
-      position: fixed;
-      bottom: 1rem;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--accent-color);
-      color: #fff;
-      padding: 0.7rem 1.4rem;
-      text-decoration: none;
-      font-weight: 700;
-      font-size: 0.9rem;
-      opacity: 0.65;
-      transition: opacity 0.3s;
-      z-index: 1000;
+      position: fixed; bottom: 1rem; left: 50%;
+      transform: translateX(-50%); background: var(--accent);
+      color: #fff; padding: .7rem 1.4rem; text-decoration: none;
+      font-weight: 700; font-size: .9rem;
+      opacity: .65; transition: opacity .3s; z-index: 1000;
     }
     .floating-link:hover { opacity: 1; }
   </style>
@@ -180,7 +116,7 @@
   </header>
   <main>
     <form id="scope-form">
-      <!-- Meta information -->
+      <!-- Meta -->
       <div class="card">
         <h3>Meta</h3>
         <label><span>Date</span><input type="date" id="date"></label>
@@ -188,22 +124,66 @@
         <label><span>Tradition</span><input type="text" id="tradition"></label>
         <label><span>Goal</span><input type="text" id="goal"></label>
       </div>
-      <!-- Input sliders -->
+      <!-- Inputs & notes -->
       <div class="card">
-        <h3>Inputs (0–1 scale)</h3>
-        <label><span>Attention A</span><input type="range" id="aFocus" min="0" max="1" step="0.25" value="0"><span class="range-value" id="aFocusVal">0.00</span></label>
-        <label><span>Belief B</span><input type="range" id="bBelief" min="0" max="1" step="0.25" value="0"><span class="range-value" id="bBeliefVal">0.00</span></label>
-        <label><span>Attachment D</span><input type="range" id="dAttach" min="0" max="1" step="0.25" value="0"><span class="range-value" id="dAttachVal">0.00</span></label>
-        <label><span>Resistance R</span><input type="range" id="rRes" min="0" max="1" step="0.25" value="0"><span class="range-value" id="rResVal">0.00</span></label>
-        <label><span>Skill S</span><input type="range" id="sSkill" min="0" max="1" step="0.25" value="0"><span class="range-value" id="sSkillVal">0.00</span></label>
-        <label><span>Link L</span><input type="range" id="lLink" min="0" max="1" step="0.25" value="0"><span class="range-value" id="lLinkVal">0.00</span></label>
-        <label><span>Representation Rr</span><input type="range" id="rRepr" min="0" max="1" step="0.25" value="0"><span class="range-value" id="rReprVal">0.00</span></label>
-        <label><span>Coordination C</span><input type="range" id="cCoord" min="0" max="1" step="0.25" value="0"><span class="range-value" id="cCoordVal">0.00</span></label>
-        <label><span>Vitality V</span><input type="range" id="vVitality" min="0" max="1" step="0.25" value="0"><span class="range-value" id="vVitalityVal">0.00</span></label>
-        <label><span>Noise Q</span><input type="range" id="qNoise" min="0" max="1" step="0.25" value="1"><span class="range-value" id="qNoiseVal">1.00</span></label>
-        <label><span>κ (kappa)</span><input type="range" id="kappa" min="0" max="10" step="0.25" value="1"><span class="range-value" id="kappaVal">1.00</span></label>
+        <h3>Inputs (0–1 scale)</h3>
+        <label><span>Attention A</span>
+          <input type="range" id="aFocus" min="0" max="1" step="0.25" value="0">
+          <span class="range-value" id="aFocusVal">0.00</span>
+          <input type="text" id="aFocusNote" class="note-input" placeholder="Notes for Attention">
+        </label>
+        <label><span>Belief B</span>
+          <input type="range" id="bBelief" min="0" max="1" step="0.25" value="0">
+          <span class="range-value" id="bBeliefVal">0.00</span>
+          <input type="text" id="bBeliefNote" class="note-input" placeholder="Notes for Belief">
+        </label>
+        <label><span>Attachment D</span>
+          <input type="range" id="dAttach" min="0" max="1" step="0.25" value="0">
+          <span class="range-value" id="dAttachVal">0.00</span>
+          <input type="text" id="dAttachNote" class="note-input" placeholder="Notes for Attachment">
+        </label>
+        <label><span>Resistance R</span>
+          <input type="range" id="rRes" min="0" max="1" step="0.25" value="0">
+          <span class="range-value" id="rResVal">0.00</span>
+          <input type="text" id="rResNote" class="note-input" placeholder="Notes for Resistance">
+        </label>
+        <label><span>Skill S</span>
+          <input type="range" id="sSkill" min="0" max="1" step="0.25" value="0">
+          <span class="range-value" id="sSkillVal">0.00</span>
+          <input type="text" id="sSkillNote" class="note-input" placeholder="Notes for Skill">
+        </label>
+        <label><span>Link L</span>
+          <input type="range" id="lLink" min="0" max="1" step="0.25" value="0">
+          <span class="range-value" id="lLinkVal">0.00</span>
+          <input type="text" id="lLinkNote" class="note-input" placeholder="Notes for Link">
+        </label>
+        <label><span>Representation Rr</span>
+          <input type="range" id="rRepr" min="0" max="1" step="0.25" value="0">
+          <span class="range-value" id="rReprVal">0.00</span>
+          <input type="text" id="rReprNote" class="note-input" placeholder="Notes for Representation">
+        </label>
+        <label><span>Coordination C</span>
+          <input type="range" id="cCoord" min="0" max="1" step="0.25" value="0">
+          <span class="range-value" id="cCoordVal">0.00</span>
+          <input type="text" id="cCoordNote" class="note-input" placeholder="Notes for Coordination">
+        </label>
+        <label><span>Vitality V</span>
+          <input type="range" id="vVitality" min="0" max="1" step="0.25" value="0">
+          <span class="range-value" id="vVitalityVal">0.00</span>
+          <input type="text" id="vVitalityNote" class="note-input" placeholder="Notes for Vitality">
+        </label>
+        <label><span>Noise Q</span>
+          <input type="range" id="qNoise" min="0" max="1" step="0.25" value="1">
+          <span class="range-value" id="qNoiseVal">1.00</span>
+          <input type="text" id="qNoiseNote" class="note-input" placeholder="Notes for Noise">
+        </label>
+        <label><span>κ (kappa)</span>
+          <input type="range" id="kappa" min="0" max="10" step="0.25" value="1">
+          <span class="range-value" id="kappaVal">1.00</span>
+          <input type="text" id="kappaNote" class="note-input" placeholder="Notes for κ">
+        </label>
       </div>
-      <!-- Outputs section -->
+      <!-- Outputs -->
       <div class="card">
         <h3>Outputs</h3>
         <div class="output-row">
@@ -226,7 +206,7 @@
   </main>
   <a class="floating-link" href="https://www.milkandgin.co.uk/scope" target="_blank">Read More About SCOPE</a>
   <script>
-    // Element references
+    // References to sliders
     const inputs = {
       aFocus: document.getElementById('aFocus'),
       bBelief: document.getElementById('bBelief'),
@@ -240,7 +220,8 @@
       qNoise: document.getElementById('qNoise'),
       kappa: document.getElementById('kappa')
     };
-    const spans = {
+    // References to range value displays
+    const spanVals = {
       aFocusVal: document.getElementById('aFocusVal'),
       bBeliefVal: document.getElementById('bBeliefVal'),
       dAttachVal: document.getElementById('dAttachVal'),
@@ -253,12 +234,27 @@
       qNoiseVal: document.getElementById('qNoiseVal'),
       kappaVal: document.getElementById('kappaVal')
     };
+    // Note inputs
+    const notes = {
+      aFocusNote: document.getElementById('aFocusNote'),
+      bBeliefNote: document.getElementById('bBeliefNote'),
+      dAttachNote: document.getElementById('dAttachNote'),
+      rResNote: document.getElementById('rResNote'),
+      sSkillNote: document.getElementById('sSkillNote'),
+      lLinkNote: document.getElementById('lLinkNote'),
+      rReprNote: document.getElementById('rReprNote'),
+      cCoordNote: document.getElementById('cCoordNote'),
+      vVitalityNote: document.getElementById('vVitalityNote'),
+      qNoiseNote: document.getElementById('qNoiseNote'),
+      kappaNote: document.getElementById('kappaNote')
+    };
+    // Output elements
     const psiBar   = document.getElementById('psiBar');
     const pStarBar = document.getElementById('pStarBar');
     const psiVal   = document.getElementById('psiVal');
     const pStarVal = document.getElementById('pStarVal');
-    const status   = document.getElementById('status');
-    // Compute and display outputs
+    const statusEl = document.getElementById('status');
+    // Calculation
     function compute() {
       const A = parseFloat(inputs.aFocus.value)   || 0;
       const B = parseFloat(inputs.bBelief.value)  || 0;
@@ -274,7 +270,7 @@
       const H  = A * B * (1 - D) * (1 - R);
       const X  = S * L * Rp * C;
       const PsiRaw  = K * H * X * V * Q;
-      const baseline = 0.5;
+      const baseline= 0.5;
       const PStarRaw= baseline + (1 - baseline) * PsiRaw;
       const Psi  = Math.max(0, Math.min(1, PsiRaw));
       const PStar= Math.max(0, Math.min(1, PStarRaw));
@@ -286,21 +282,19 @@
       pStarVal.textContent = PStar.toFixed(3);
       return {Psi, PStar};
     }
-    // Update slider display values
     function updateDisplay() {
-      spans.aFocusVal.textContent   = parseFloat(inputs.aFocus.value).toFixed(2);
-      spans.bBeliefVal.textContent  = parseFloat(inputs.bBelief.value).toFixed(2);
-      spans.dAttachVal.textContent  = parseFloat(inputs.dAttach.value).toFixed(2);
-      spans.rResVal.textContent     = parseFloat(inputs.rRes.value).toFixed(2);
-      spans.sSkillVal.textContent   = parseFloat(inputs.sSkill.value).toFixed(2);
-      spans.lLinkVal.textContent    = parseFloat(inputs.lLink.value).toFixed(2);
-      spans.rReprVal.textContent    = parseFloat(inputs.rRepr.value).toFixed(2);
-      spans.cCoordVal.textContent   = parseFloat(inputs.cCoord.value).toFixed(2);
-      spans.vVitalityVal.textContent= parseFloat(inputs.vVitality.value).toFixed(2);
-      spans.qNoiseVal.textContent   = parseFloat(inputs.qNoise.value).toFixed(2);
-      spans.kappaVal.textContent    = parseFloat(inputs.kappa.value).toFixed(2);
+      spanVals.aFocusVal.textContent   = parseFloat(inputs.aFocus.value).toFixed(2);
+      spanVals.bBeliefVal.textContent  = parseFloat(inputs.bBelief.value).toFixed(2);
+      spanVals.dAttachVal.textContent  = parseFloat(inputs.dAttach.value).toFixed(2);
+      spanVals.rResVal.textContent     = parseFloat(inputs.rRes.value).toFixed(2);
+      spanVals.sSkillVal.textContent   = parseFloat(inputs.sSkill.value).toFixed(2);
+      spanVals.lLinkVal.textContent    = parseFloat(inputs.lLink.value).toFixed(2);
+      spanVals.rReprVal.textContent    = parseFloat(inputs.rRepr.value).toFixed(2);
+      spanVals.cCoordVal.textContent   = parseFloat(inputs.cCoord.value).toFixed(2);
+      spanVals.vVitalityVal.textContent= parseFloat(inputs.vVitality.value).toFixed(2);
+      spanVals.qNoiseVal.textContent   = parseFloat(inputs.qNoise.value).toFixed(2);
+      spanVals.kappaVal.textContent    = parseFloat(inputs.kappa.value).toFixed(2);
     }
-    // Save latest entry to localStorage
     function updateLatestEntry() {
       const {Psi, PStar} = compute();
       const entry = {
@@ -321,11 +315,21 @@
         kappa: parseFloat(inputs.kappa.value)|| 1,
         Psi,
         PStar,
+        A_note: notes.aFocusNote.value || '',
+        B_note: notes.bBeliefNote.value || '',
+        D_note: notes.dAttachNote.value || '',
+        R_note: notes.rResNote.value || '',
+        S_note: notes.sSkillNote.value || '',
+        L_note: notes.lLinkNote.value || '',
+        Rp_note: notes.rReprNote.value || '',
+        C_note: notes.cCoordNote.value || '',
+        V_note: notes.vVitalityNote.value || '',
+        Q_note: notes.qNoiseNote.value || '',
+        kappa_note: notes.kappaNote.value || '',
         ts: new Date().toISOString()
       };
       localStorage.setItem('modernMagikLatest', JSON.stringify(entry));
     }
-    // Load previously saved entry
     function loadLatestEntry() {
       const data = localStorage.getItem('modernMagikLatest');
       if (data) {
@@ -334,30 +338,39 @@
         document.getElementById('location').value = entry.location || '';
         document.getElementById('tradition').value= entry.tradition|| '';
         document.getElementById('goal').value     = entry.goal     || '';
-        inputs.aFocus.value    = entry.A      || 0;
-        inputs.bBelief.value   = entry.B      || 0;
-        inputs.dAttach.value   = entry.D      || 0;
-        inputs.rRes.value      = entry.R      || 0;
-        inputs.sSkill.value    = entry.S      || 0;
-        inputs.lLink.value     = entry.L      || 0;
-        inputs.rRepr.value     = entry.Rp     || 0;
-        inputs.cCoord.value    = entry.C      || 0;
-        inputs.vVitality.value = entry.V      || 0;
-        inputs.qNoise.value    = entry.Q      || 0;
-        inputs.kappa.value     = entry.kappa  || 1;
+        inputs.aFocus.value   = entry.A   || 0;
+        inputs.bBelief.value  = entry.B   || 0;
+        inputs.dAttach.value  = entry.D   || 0;
+        inputs.rRes.value     = entry.R   || 0;
+        inputs.sSkill.value   = entry.S   || 0;
+        inputs.lLink.value    = entry.L   || 0;
+        inputs.rRepr.value    = entry.Rp  || 0;
+        inputs.cCoord.value   = entry.C   || 0;
+        inputs.vVitality.value= entry.V   || 0;
+        inputs.qNoise.value   = entry.Q   || 0;
+        inputs.kappa.value    = entry.kappa || 1;
+        notes.aFocusNote.value = entry.A_note || '';
+        notes.bBeliefNote.value= entry.B_note || '';
+        notes.dAttachNote.value= entry.D_note || '';
+        notes.rResNote.value   = entry.R_note || '';
+        notes.sSkillNote.value = entry.S_note || '';
+        notes.lLinkNote.value  = entry.L_note || '';
+        notes.rReprNote.value  = entry.Rp_note|| '';
+        notes.cCoordNote.value = entry.C_note || '';
+        notes.vVitalityNote.value= entry.V_note || '';
+        notes.qNoiseNote.value  = entry.Q_note || '';
+        notes.kappaNote.value   = entry.kappa_note || '';
       }
     }
-    // Save an entry into history
     function saveEntry() {
       updateLatestEntry();
       const entry = JSON.parse(localStorage.getItem('modernMagikLatest'));
       const existing = JSON.parse(localStorage.getItem('modernMagikEntries') || '[]');
       existing.push(entry);
       localStorage.setItem('modernMagikEntries', JSON.stringify(existing));
-      status.textContent = 'Entry saved.';
-      setTimeout(() => { status.textContent = ''; }, 2000);
+      statusEl.textContent = 'Entry saved.';
+      setTimeout(() => { statusEl.textContent = ''; }, 2000);
     }
-    // Download the latest entry as JSON
     function downloadLatest() {
       let latest = localStorage.getItem('modernMagikLatest');
       if (!latest) {
@@ -373,10 +386,10 @@
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      status.textContent = 'File downloaded.';
-      setTimeout(() => { status.textContent = ''; }, 2000);
+      statusEl.textContent = 'File downloaded.';
+      setTimeout(() => { statusEl.textContent = ''; }, 2000);
     }
-    // Attach events
+    // Event listeners
     Object.values(inputs).forEach(el => {
       el.addEventListener('input', () => {
         updateDisplay();
@@ -384,6 +397,7 @@
         compute();
       });
     });
+    // Save and download
     document.getElementById('scope-form').addEventListener('submit', e => {
       e.preventDefault();
       saveEntry();
@@ -397,4 +411,3 @@
   </script>
 </body>
 </html>
-
